@@ -1,0 +1,79 @@
+body {
+    background-color: #1C1B2D;
+    font-family: Poppins, sans-serif;
+    /* center and  */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-size: 7.5vmin;
+}
+
+#game-board {
+
+    display:grid;
+    grid-template-rows: repeat(var(--board-size), var(--cell-size));
+    grid-template-columns: repeat(var(--board-size), var(--cell-size));
+    background-color: #2A293F;
+    gap: var(--cell-gap);
+    padding: var(--cell-gap);
+    border-radius: var(--cell-bevel);
+    /* to enable tiles to relatively position them on the grid */
+    position: relative;
+}
+
+
+
+.cell {
+    background-color: #1C1B2D;
+    border-radius: var(--cell-bevel);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: aliceblue;
+    font-weight: bold;
+}
+
+.tile {
+    /* variables hold the position/location of the tile */
+    --x: 0;
+    --y: 0;
+    --background-color: #FFC8C2;
+    /* absolute position won't affect any already existing content, won't move anything */
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    color: #1C1B2D;
+    background-color: var(--background-color);
+    width: var(--cell-size);
+    height: var(--cell-size);
+    border-radius: var(--cell-bevel);
+    /* pick position of top edge of tile according to the variable y */
+    /* multiply the cell size plus gap size by location variables and add padding of grid */
+    top: calc( var(--y) * (var(--cell-size) + (var(--cell-gap))) + var(--cell-gap) );
+    /* pick position of left edge of the tile according to the variable x */
+    left: calc( var(--x) * (var(--cell-size) + (var(--cell-gap))) + var(--cell-gap) );
+    /* add animation to the tile on appearance */
+    animation: appear 200ms ease-in-out;
+    /* for smooth movement animation */
+    transition: 100ms ease-in-out;
+}
+
+@keyframes appear {
+    /* start on half opacity and .7 size */
+    0% {
+        opacity: .5;
+        transform: scale(.7);
+    }
+}
+
+
+/*
+#FFC8C2
+#615F7C
+#2A293F
+#1C1B2D
+*/
