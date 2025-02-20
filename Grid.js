@@ -1,5 +1,4 @@
 // variables holding the main properties of the grid, enable modular code
-import Tile from "./Tile.js";
 
 const BOARD_SIZE = 4
 const CELL_SIZE = 20
