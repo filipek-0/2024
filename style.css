@@ -11,11 +11,15 @@ body {
 }
 
 #game-board {
+    --board-size: 4;
+    --cell-size: 20vmin;
+    --cell-gap: 1.5vmin;
+    --cell-bevel: 1.5vmin;
 
     display:grid;
     grid-template-rows: repeat(var(--board-size), var(--cell-size));
     grid-template-columns: repeat(var(--board-size), var(--cell-size));
-    background-color: #2A293F;
+    /* background-color: #2A293F; */
     gap: var(--cell-gap);
     padding: var(--cell-gap);
     border-radius: var(--cell-bevel);
@@ -26,7 +30,7 @@ body {
 
 
 .cell {
-    background-color: #1C1B2D;
+    background-color: #2A293F;
     border-radius: var(--cell-bevel);
     display: flex;
     justify-content: center;
@@ -40,13 +44,14 @@ body {
     --x: 0;
     --y: 0;
     --background-color: #FFC8C2;
+    --color: #1C1B2D;
     /* absolute position won't affect any already existing content, won't move anything */
     position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: 500;
-    color: #1C1B2D;
+    color: var(--color);
     background-color: var(--background-color);
     width: var(--cell-size);
     height: var(--cell-size);
@@ -58,8 +63,8 @@ body {
     left: calc( var(--x) * (var(--cell-size) + (var(--cell-gap))) + var(--cell-gap) );
     /* add animation to the tile on appearance */
     animation: appear 200ms ease-in-out;
-    /* for smooth movement animation */
-    transition: 100ms ease-in-out;
+    /* for smooth movement animation, whenever a tile element is moved, it slides */
+    transition: 80ms ease-in-out;
 }
 
 @keyframes appear {
@@ -69,11 +74,3 @@ body {
         transform: scale(.7);
     }
 }
-
-
-/*
-#FFC8C2
-#615F7C
-#2A293F
-#1C1B2D
-*/
