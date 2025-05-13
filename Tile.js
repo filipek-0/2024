@@ -76,8 +76,11 @@ export default class Tile {
             case 10:
                 this.#tileElement.style.setProperty("--background-color", '#D21C4A')
                 break;
-            default:
+            case 11:
                 this.#tileElement.style.setProperty("--background-color", '#BC1755')
+                break;
+            default:
+                this.#tileElement.style.setProperty("--background-color", '#1C1B2D')
         }
         if (power > 6) {
             this.#tileElement.style.setProperty("--color", '#FFDCD8')

@@ -15,6 +15,17 @@ function setInput() {
     window.addEventListener("keydown", handleInput, {once:true})
 }
 
+// listening for new game button click
+document.getElementById("newgame-board").addEventListener("click", startNewGame);
+
+// score functionality
+let score = 0;
+let bestScore = getBestScore();
+let scoreDisplay = document.getElementById("current-score-num");
+let bestScoreDisplay = document.getElementById("best-score-num");
+scoreDisplay.innerHTML = score;
+bestScoreDisplay.innerHTML = bestScore;
+
 // async enables us to wait until all animations are finished before calling possible merging functions
 // await pauses the execution of an async function until a Promise is resolved or rejected, in moveTiles
 async function handleInput(e) {
@@ -60,12 +71,55 @@ async function handleInput(e) {
     // check for a losing state
     if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()) {
         newTile.waitForTransition(true).then(() => { // by passing true, we aren't waiting for transition, but for animation end
+            gameOver();
             alert("Game Over")
         })
         return  // exit handleInput function, no more input possible
     }
 
     setInput()
+}
+
+function startNewGame() {
+    console.log("click")
+    grid.clearCells();
+    score = 0;
+    scoreDisplay.innerHTML = score;
+    grid.randomEmptyCell().tile = new Tile(gameBoard);
+    grid.randomEmptyCell().tile = new Tile(gameBoard);
+    setInput();
+}
+
+function gameOver() {
+
+}
+
+function saveGameState() {
+    const state = {
+        tiles: grid.cells.map(cell => cell.tile ? cell.tile.value : null),
+        score: score,
+        bestScore: Math.max(score, getBestScore())
+    };
+    localStorage.setItem("gameState", JSON.stringify(state));
+}
+
+function loadGameState() {
+    const state = JSON.parse(localStorage.getItem("gameState"));
+    if (!state) return;
+
+    score = state.score;
+    scoreDisplay.innerHTML = score;
+
+}
+
+function updateBestScore() {
+    localStorage.setItem("bestScore", score)
+    bestScore = score;
+    bestScoreDisplay.innerHTML = bestScore;
+}
+
+function getBestScore() {
+    return parseInt(localStorage.getItem("bestScore")) || 0;
 }
 
 function moveUp() {
@@ -99,9 +153,12 @@ function moveTiles(cells) {
                 lastValidCell = moveToCell  // last cell possible to move to
             }
             if (lastValidCell != null) {    // if we can move it, do the following
-                promises.push(cell.tile.waitForTransition())             // every time we have a tile that can move, wait for animation to finish
+                promises.push(cell.tile.waitForTransition())     // every time we have a tile that can move, wait for animation to finish
                 if (lastValidCell.tile != null) {      // if it has a tile, we must try to merge
                     lastValidCell.mergeTile = cell.tile
+                    score += cell.tile.value * 2;      // for every merge, increase score by the merged value
+                    scoreDisplay.innerHTML = score;
+                    if (score > getBestScore()) updateBestScore();
                 } else {        // if it doesn't have a tile, just move the current to the last valid
                     lastValidCell.tile = cell.tile
                 }

@@ -1,13 +1,113 @@
 body {
     background-color: #1C1B2D;
     font-family: Poppins, sans-serif;
-    /* center and  */
+    /* center */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0 auto;
+    font-size: 5vmin;
+}
+
+#above-board {
+    width: 64.5vmin;
+}
+
+#below-board > p {
+    color: #615F7C;
+    width: 64.5vmin;
+    font-size: 2.8vmin;
+    display: inline-block;
+    font-weight: normal;
+}
+
+mark {
+    color: #FFC8C2;
+    background-color: #1C1B2D;
+}
+
+#newgame-score-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: auto;
+    width: 100%;
+}
+
+#score-board {
+    background-color: #2A293F;
+    border-radius: .2em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 1.5em;
+    width: auto;
+    padding: 0 .3em 0 .3em;
+    gap: 1em;
+}
+
+#newgame-board {
+    background-color: #2A293F;
+    border-radius: .2em;
+    height: 1.5em;
+    width: 3.5em;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    user-select: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+#newgame-board:hover {
+    transform: scale(1.05);
+}
+
+#newgame-board:active {
+    transform: scale(0.95);
+    color: #FFC8C2;
+}
+
+#current-score {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #FFC8C2;
+}
+
+#best-score {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #615F7C;
+}
+
+h1 {
+    color: #FFC8C2;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+h2 {
+    font-size: .5em;
+    color: #615F7C;
+    font-weight: 600;
     margin: 0;
-    font-size: 7.5vmin;
+}
+
+h3 {
+    font-size: .45em;
+    font-weight: 600;
+    margin: 0;
+    line-height: 80%;
+}
+
+p {
+    font-size: .6em;
+    font-weight: 500;
+    margin: 0;
 }
 
 #game-board {
@@ -16,6 +116,7 @@ body {
     --cell-gap: 1.5vmin;
     --cell-bevel: 1.5vmin;
 
+    margin-top: .5em;
     display:grid;
     grid-template-rows: repeat(var(--board-size), var(--cell-size));
     grid-template-columns: repeat(var(--board-size), var(--cell-size));
@@ -50,7 +151,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-weight: 500;
+    font-weight: 700;
+    font-size: 3.8vmin;
     color: var(--color);
     background-color: var(--background-color);
     width: var(--cell-size);
@@ -66,6 +168,7 @@ body {
     /* for smooth movement animation, whenever a tile element is moved, it slides */
     transition: 80ms ease-in-out;
 }
+
 
 @keyframes appear {
     /* start on half opacity and .7 size */

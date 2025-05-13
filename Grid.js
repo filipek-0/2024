@@ -1,7 +1,7 @@
 // variables holding the main properties of the grid, enable modular code
 
 const BOARD_SIZE = 4
-const CELL_SIZE = 20
+const CELL_SIZE = 15
 const CELL_GAP = 1.5
 
 // default Grid class that holds all cells and grid properties
@@ -62,6 +62,15 @@ export default class Grid {
     randomEmptyCell() {
         const randomIndex = Math.floor(Math.random() * this.#emptyCells.length)
         return this.#emptyCells[randomIndex]
+    }
+
+    clearCells() {
+        this.cells.forEach(cell => {
+            if (cell.tile) {
+                cell.tile.remove();
+                cell.tile = null;
+            }
+        })
     }
 }
 
