@@ -6,23 +6,25 @@ const gameBoard = document.getElementById("game-board")
 // pass gameBoard element (a grid) into Grid class where we define it and give it parameters
 const grid = new Grid(gameBoard)
 
-// a newly created tile object is assigned to the tile property of a Cell class
-grid.randomEmptyCell().tile = new Tile(gameBoard)
-grid.randomEmptyCell().tile = new Tile(gameBoard)
-setInput()
-
 function setInput() {
     window.addEventListener("keydown", handleInput, {once:true})
 }
 
 // listening for new game button click
-document.getElementById("newgame-board").addEventListener("click", startNewGame);
+document.querySelectorAll(".newgame-board").forEach(button => button.addEventListener("click", startNewGame));
 
 // score functionality
 let score = 0;
 let bestScore = getBestScore();
 let scoreDisplay = document.getElementById("current-score-num");
 let bestScoreDisplay = document.getElementById("best-score-num");
+
+// game over functionality
+let isGameOver = false;
+const gameOverScreen = document.getElementById("game-over-screen")
+
+loadGameState();
+
 scoreDisplay.innerHTML = score;
 bestScoreDisplay.innerHTML = bestScore;
 
@@ -33,6 +35,7 @@ async function handleInput(e) {
         case "ArrowUp":
             if (!canMoveUp()){  // check whether a move is possible, if not, reject and wait for input
                 setInput()
+                triggerShakeVertical()
                 return
             }
             await moveUp();
@@ -40,6 +43,7 @@ async function handleInput(e) {
         case "ArrowDown":
             if (!canMoveDown()){
                 setInput()
+                triggerShakeVertical()
                 return
             }
             await moveDown();
@@ -47,6 +51,7 @@ async function handleInput(e) {
         case "ArrowLeft":
             if (!canMoveLeft()){
                 setInput()
+                triggerShakeHorizontal()
                 return
             }
             await moveLeft();
@@ -54,6 +59,7 @@ async function handleInput(e) {
         case "ArrowRight":
             if (!canMoveRight()){
                 setInput()
+                triggerShakeHorizontal()
                 return
             }
             await moveRight();
@@ -67,12 +73,12 @@ async function handleInput(e) {
 
     const newTile = new Tile(gameBoard)
     grid.randomEmptyCell().tile = newTile   // generate a new tile after movement
+    saveGameState()
 
     // check for a losing state
     if (!canMoveUp() && !canMoveDown() && !canMoveLeft() && !canMoveRight()) {
         newTile.waitForTransition(true).then(() => { // by passing true, we aren't waiting for transition, but for animation end
             gameOver();
-            alert("Game Over")
         })
         return  // exit handleInput function, no more input possible
     }
@@ -81,8 +87,10 @@ async function handleInput(e) {
 }
 
 function startNewGame() {
-    console.log("click")
+    isGameOver = false;
     grid.clearCells();
+    gameOverScreen.classList.remove("show")
+    gameOverScreen.classList.add("hidden")
     score = 0;
     scoreDisplay.innerHTML = score;
     grid.randomEmptyCell().tile = new Tile(gameBoard);
@@ -91,25 +99,73 @@ function startNewGame() {
 }
 
 function gameOver() {
-
+    isGameOver = true;
+    saveGameState();
+    gameOverScreen.classList.add("show");
+    gameOverScreen.classList.remove("hidden");
+    document.getElementById("final-score").textContent = score;
 }
 
 function saveGameState() {
+    //variable for the tiles information
+    const tileData = grid.cells
+        .filter(cell => cell.tile)
+        .map(cell => ({
+            x: cell.x,
+            y: cell.y,
+            value: cell.tile.value
+        }));
+
+    // variable for the overall state
     const state = {
-        tiles: grid.cells.map(cell => cell.tile ? cell.tile.value : null),
+        tiles: tileData,
         score: score,
-        bestScore: Math.max(score, getBestScore())
+        bestScore: Math.max(score, getBestScore()),
+        gameOver: isGameOver
     };
     localStorage.setItem("gameState", JSON.stringify(state));
 }
 
 function loadGameState() {
-    const state = JSON.parse(localStorage.getItem("gameState"));
-    if (!state) return;
+    const state = JSON.parse(localStorage.getItem("gameState"))
+    if (!state || state.gameOver) {
+        startNewGame()
+        return
+    }
 
-    score = state.score;
-    scoreDisplay.innerHTML = score;
+    score = state.score
+    scoreDisplay.innerHTML = score
 
+    grid.clearCells()
+
+    gameOverScreen.classList.remove("show")
+    gameOverScreen.classList.add("hidden")
+
+    state.tiles.forEach(({ x, y, value }) => {
+        const cell = grid.cells.find(c => c.x === x && c.y === y);
+        if (!cell) return;
+        const tile = new Tile(gameBoard);
+        tile.value = value;
+        cell.tile = tile;
+    });
+
+    setInput()
+}
+
+function triggerShakeHorizontal() {
+    gameBoard.classList.add("shake-h");
+
+    gameBoard.addEventListener("animationend", () => {
+        gameBoard.classList.remove("shake-h");
+    }, { once: true });
+}
+
+function triggerShakeVertical() {
+    gameBoard.classList.add("shake-v");
+
+    gameBoard.addEventListener("animationend", () => {
+        gameBoard.classList.remove("shake-v");
+    }, { once: true });
 }
 
 function updateBestScore() {
@@ -127,8 +183,7 @@ function moveUp() {
 }
 
 function moveDown() {
-    return moveTiles(grid.cellsByColumn.map(column => [...column].reverse()))   // [...column] creates a shallow column of the array to prevent modifying original
-                                                                                // map goes over each element of the array, in this case another array, the columns
+    return moveTiles(grid.cellsByColumn.map(column => [...column].reverse()))   // [...column] creates a shallow column of the array to prevent modifying original// map goes over each element of the array, in this case another array, the columns
 }
 
 function moveLeft() {

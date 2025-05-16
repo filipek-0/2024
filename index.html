@@ -19,7 +19,7 @@
 <div id="above-board">
     <h1>2048</h1>
     <div id="newgame-score-container">
-        <div class="not-selectable" id="newgame-board">
+        <div class="newgame-board">
             <h2>new game</h2>
         </div>
         <div id="score-board">
@@ -34,9 +34,18 @@
         </div>
     </div>
 </div>
-
-<div id="game-board">
-
+<div id="game-container">
+    <div id="game-over-screen" class="hidden">
+        <div id="game-over-content">
+            <h1>GAME OVER</h1>
+            <p>Score: <mark id="final-score">0</mark></p>
+            <div class="newgame-board">
+                <h2>Try Again</h2>
+            </div>
+        </div>
+    </div>
+    <div id="game-board">
+    </div>
 </div>
 
 <div id="below-board">
