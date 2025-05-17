@@ -8,6 +8,7 @@ body {
     height: 100vh;
     margin: 0 auto;
     font-size: 5vmin;
+    user-select: none;
 }
 
 #above-board {

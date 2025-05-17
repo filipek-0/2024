@@ -7,7 +7,46 @@ const gameBoard = document.getElementById("game-board")
 const grid = new Grid(gameBoard)
 
 function setInput() {
+    setTouch()
     window.addEventListener("keydown", handleInput, {once:true})
+}
+
+function setTouch() {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let direction = null;
+
+    document.addEventListener("touchstart", e => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }, {once:true});
+
+    document.addEventListener("touchmove", e => {
+        e.preventDefault();
+    }, {passive:false});
+
+    document.addEventListener("touchend", e => {
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+
+        const distX = touchEndX - touchStartX;
+        const distY = touchEndY - touchStartY;
+
+        direction = calculateDirection(distX, distY);
+
+        handleInput({ key: direction }, { once: true });
+    }, {once: true});
+}
+
+function calculateDirection(distX, distY) {
+    if (Math.abs(distX) > Math.abs(distY)) {
+        if (distX > 0) return "ArrowRight";
+        else return "ArrowLeft";
+    }
+    else {
+        if (distY > 0) return "ArrowDown";
+        else return "ArrowUp";
+    }
 }
 
 // listening for new game button click
