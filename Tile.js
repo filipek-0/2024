@@ -9,11 +9,15 @@ export default class Tile {
         this.#tileElement.classList.add("tile")
         gameBoard.append(this.#tileElement)
         this.value = value  // when assigning a value to a property that has a setter, the method is automatically invoked
-        this.#tileElement.textContent = value;    // set the HTML text of the div tile element
+        this.#tileElement.textContent = value    // set the HTML text of the div tile element
     }
 
     get value() {
         return this.#value
+    }
+
+    get tileElement() {
+        return this.#tileElement
     }
 
     set value(v) {

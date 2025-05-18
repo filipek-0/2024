@@ -1,7 +1,6 @@
 body {
-    background-color: #1C1B2D;
+    background-color: #171524;
     font-family: Poppins, sans-serif;
-    /* center */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,12 +10,27 @@ body {
     user-select: none;
 }
 
+@media screen and (max-width: 768px) and (orientation: portrait) {
+    body {
+        background-color: #100f19;
+        font-family: Poppins, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        font-size: 5vmin;
+        user-select: none;
+    }
+}
+
 #above-board {
     width: 64.5vmin;
 }
 
 #below-board > p {
-    color: #615F7C;
+    color: #4c4b66;
     width: 64.5vmin;
     font-size: 2.8vmin;
     display: inline-block;
@@ -82,7 +96,7 @@ mark {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    color: #615F7C;
+    color: #7d7a9f;
 }
 
 #game-container {
@@ -102,7 +116,7 @@ mark {
     justify-content: center;
     align-items: center;
     z-index: 10;
-    background-color: rgba(28, 27, 45, 0.96);
+    background-color: rgba(23, 21, 36, 0.96);
     transition: opacity 0.3s ease;
 }
 
@@ -125,7 +139,7 @@ mark {
 
 
 #game-over-content > p {
-    color: #615F7C;
+    color: #7d7a9f;
     width: 64.5vmin;
     font-size: 2.8vmin;
     display: inline-block;
@@ -141,7 +155,7 @@ h1 {
 
 h2 {
     font-size: .5em;
-    color: #615F7C;
+    color: #7d7a9f;
     font-weight: 600;
     margin: 0;
 }
@@ -212,12 +226,14 @@ p {
     top: calc( var(--y) * (var(--cell-size) + (var(--cell-gap))) + var(--cell-gap) );
     /* pick position of left edge of the tile according to the variable x */
     left: calc( var(--x) * (var(--cell-size) + (var(--cell-gap))) + var(--cell-gap) );
-    /* add animation to the tile on appearance */
-    animation: appear 200ms ease-in-out;
     /* for smooth movement animation, whenever a tile element is moved, it slides */
     transition: 80ms ease-in-out;
 }
 
+.appear {
+    /* add animation to the tile on appearance */
+    animation: appear 200ms ease-in-out;
+}
 
 @keyframes appear {
     /* start on half opacity and .7 size */
@@ -251,4 +267,18 @@ p {
 
 .shake-v {
     animation: shake-v 0.3s ease;
+}
+
+.breathe {
+    animation: breathe 1.5s ease;
+    animation-fill-mode: both;
+}
+
+@keyframes breathe {
+    0%  { transform: scale(1); }
+    20% { transform: scale(1.1); }
+    40% { transform: scale(0.9); }
+    60% { transform: scale(1.02); }
+    80% { transform: scale(0.98); }
+    100%{ transform: scale(1); }
 }

@@ -6,6 +6,8 @@ const gameBoard = document.getElementById("game-board")
 // pass gameBoard element (a grid) into Grid class where we define it and give it parameters
 const grid = new Grid(gameBoard)
 
+let discoveredTiles = new Set();
+
 function setInput() {
     setTouch()
     window.addEventListener("keydown", handleInput, {once:true})
@@ -112,6 +114,7 @@ async function handleInput(e) {
 
     const newTile = new Tile(gameBoard)
     grid.randomEmptyCell().tile = newTile   // generate a new tile after movement
+    tileAppearAnimation(newTile);
     saveGameState()
 
     // check for a losing state
@@ -132,8 +135,13 @@ function startNewGame() {
     gameOverScreen.classList.add("hidden")
     score = 0;
     scoreDisplay.innerHTML = score;
-    grid.randomEmptyCell().tile = new Tile(gameBoard);
-    grid.randomEmptyCell().tile = new Tile(gameBoard);
+    discoveredTiles = new Set([2,4]);
+    const newTile1 = new Tile(gameBoard);
+    const newTile2 = new Tile(gameBoard);
+    grid.randomEmptyCell().tile = newTile1;
+    tileAppearAnimation(newTile1);
+    grid.randomEmptyCell().tile = newTile2;
+    tileAppearAnimation(newTile2);
     setInput();
 }
 
@@ -160,7 +168,8 @@ function saveGameState() {
         tiles: tileData,
         score: score,
         bestScore: Math.max(score, getBestScore()),
-        gameOver: isGameOver
+        gameOver: isGameOver,
+        discovered: Array.from(discoveredTiles)
     };
     localStorage.setItem("gameState", JSON.stringify(state));
 }
@@ -174,6 +183,8 @@ function loadGameState() {
 
     score = state.score
     scoreDisplay.innerHTML = score
+
+    discoveredTiles = new Set(state.discovered)
 
     grid.clearCells()
 
@@ -207,6 +218,13 @@ function triggerShakeVertical() {
     }, { once: true });
 }
 
+function tileAppearAnimation(newTile) {
+    newTile.tileElement.classList.add("appear")
+    newTile.tileElement.addEventListener("animationend", () => {
+        newTile.tileElement.classList.remove("appear")
+    })
+}
+
 function updateBestScore() {
     localStorage.setItem("bestScore", score)
     bestScore = score;
@@ -233,6 +251,26 @@ function moveRight() {
     return moveTiles(grid.cellsByRow.map(rows => [...rows].reverse()))
 }
 
+function updateScore(cell) {
+    let tileValue = cell.tile.value * 2;
+    score += tileValue;      // for every merge, increase score by the merged value
+    scoreDisplay.innerHTML = score;
+    if (score > getBestScore()) updateBestScore();
+
+    // if we merge a new tile (discover a new number) for the first time, play breathe animation
+    if (!discoveredTiles.has(tileValue)) {
+        discoveredTiles.add(tileValue)
+        requestAnimationFrame(() => {
+            if (cell.tile && cell.tile.tileElement != null) {
+                cell.tile.tileElement.classList.add("breathe");
+                cell.tile.tileElement.addEventListener("animationend", () => {
+                    cell.tile.tileElement.classList.remove("breathe");
+                }, {once: true});
+            }
+        });
+    }
+}
+
 function moveTiles(cells) {
     return Promise.all(     // promises are placeholders for future values, either succeed or fail
     cells.flatMap(group => {
@@ -250,9 +288,7 @@ function moveTiles(cells) {
                 promises.push(cell.tile.waitForTransition())     // every time we have a tile that can move, wait for animation to finish
                 if (lastValidCell.tile != null) {      // if it has a tile, we must try to merge
                     lastValidCell.mergeTile = cell.tile
-                    score += cell.tile.value * 2;      // for every merge, increase score by the merged value
-                    scoreDisplay.innerHTML = score;
-                    if (score > getBestScore()) updateBestScore();
+                    updateScore(lastValidCell);
                 } else {        // if it doesn't have a tile, just move the current to the last valid
                     lastValidCell.tile = cell.tile
                 }
