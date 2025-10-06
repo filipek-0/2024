@@ -1,0 +1,284 @@
+body {
+    background-color: #171524;
+    font-family: Poppins, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0 auto;
+    font-size: 5vmin;
+    user-select: none;
+}
+
+@media screen and (max-width: 768px) and (orientation: portrait) {
+    body {
+        background-color: #100f19;
+        font-family: Poppins, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        font-size: 5vmin;
+        user-select: none;
+    }
+}
+
+#above-board {
+    width: 64.5vmin;
+}
+
+#below-board > p {
+    color: #4c4b66;
+    width: 64.5vmin;
+    font-size: 2.8vmin;
+    display: inline-block;
+    font-weight: normal;
+}
+
+mark {
+    color: #FFC8C2;
+    background-color: #1C1B2D;
+}
+
+#newgame-score-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: auto;
+    width: 100%;
+}
+
+#score-board {
+    background-color: #2A293F;
+    border-radius: .2em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 1.5em;
+    width: auto;
+    padding: 0 .3em 0 .3em;
+    gap: 1em;
+}
+
+.newgame-board {
+    background-color: #2A293F;
+    border-radius: .2em;
+    height: 1.5em;
+    width: 3.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.newgame-board:hover {
+    transform: scale(1.05);
+}
+
+.newgame-board:active {
+    transform: scale(0.95);
+    color: #FFC8C2;
+}
+
+#current-score {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #FFC8C2;
+}
+
+#best-score {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #7d7a9f;
+}
+
+#game-container {
+    position: relative;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+#game-over-screen {
+    position: absolute;
+    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    background-color: rgba(23, 21, 36, 0.96);
+    transition: opacity 0.3s ease;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#game-over-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+
+#game-over-content > p {
+    color: #7d7a9f;
+    width: 64.5vmin;
+    font-size: 2.8vmin;
+    display: inline-block;
+    font-weight: normal;
+    margin-bottom: 1em;
+}
+
+h1 {
+    color: #FFC8C2;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+h2 {
+    font-size: .5em;
+    color: #7d7a9f;
+    font-weight: 600;
+    margin: 0;
+}
+
+h3 {
+    font-size: .45em;
+    font-weight: 600;
+    margin: 0;
+    line-height: 80%;
+}
+
+p {
+    font-size: .6em;
+    font-weight: 500;
+    margin: 0;
+}
+
+#game-board {
+    --board-size: 4;
+    --cell-size: 20vmin;
+    --cell-gap: 1.5vmin;
+    --cell-bevel: 1.5vmin;
+
+    margin-top: .5em;
+    display:grid;
+    grid-template-rows: repeat(var(--board-size), var(--cell-size));
+    grid-template-columns: repeat(var(--board-size), var(--cell-size));
+    /* background-color: #2A293F; */
+    gap: var(--cell-gap);
+    padding: var(--cell-gap);
+    border-radius: var(--cell-bevel);
+    /* to enable tiles to relatively position them on the grid */
+    position: relative;
+}
+
+
+
+.cell {
+    background-color: #2A293F;
+    border-radius: var(--cell-bevel);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: aliceblue;
+    font-weight: bold;
+}
+
+.tile {
+    /* variables hold the position/location of the tile */
+    --x: 0;
+    --y: 0;
+    --background-color: #FFC8C2;
+    --color: #1C1B2D;
+    /* absolute position won't affect any already existing content, won't move anything */
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 3.8vmin;
+    color: var(--color);
+    background-color: var(--background-color);
+    width: var(--cell-size);
+    height: var(--cell-size);
+    border-radius: var(--cell-bevel);
+    /* pick position of top edge of tile according to the variable y */
+    /* multiply the cell size plus gap size by location variables and add padding of grid */
+    top: calc( var(--y) * (var(--cell-size) + (var(--cell-gap))) + var(--cell-gap) );
+    /* pick position of left edge of the tile according to the variable x */
+    left: calc( var(--x) * (var(--cell-size) + (var(--cell-gap))) + var(--cell-gap) );
+    /* for smooth movement animation, whenever a tile element is moved, it slides */
+    transition: 80ms ease-in-out;
+}
+
+.appear {
+    /* add animation to the tile on appearance */
+    animation: appear 200ms ease-in-out;
+}
+
+@keyframes appear {
+    /* start on half opacity and .7 size */
+    0% {
+        opacity: .5;
+        transform: scale(.7);
+    }
+}
+
+@keyframes shake-h {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(-.04em); }
+    40%  { transform: translateX(.04em); }
+    60%  { transform: translateX(-.04em); }
+    80%  { transform: translateX(.04em); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes shake-v {
+    0%   { transform: translateY(0); }
+    20%  { transform: translateY(-.04em); }
+    40%  { transform: translateY(.04em); }
+    60%  { transform: translateY(-.04em); }
+    80%  { transform: translateY(.04em); }
+    100% { transform: translateY(0); }
+}
+
+.shake-h {
+    animation: shake-h 0.3s ease;
+}
+
+.shake-v {
+    animation: shake-v 0.3s ease;
+}
+
+.breathe {
+    animation: breathe 1.5s ease;
+    animation-fill-mode: both;
+}
+
+@keyframes breathe {
+    0%  { transform: scale(1); }
+    20% { transform: scale(1.1); }
+    40% { transform: scale(0.9); }
+    60% { transform: scale(1.02); }
+    80% { transform: scale(0.98); }
+    100%{ transform: scale(1); }
+}
