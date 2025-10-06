@@ -1,19 +1,19 @@
 # 2024
-My implementation of the popular 2048 game where you try and connect as many blocks of numbers as possible to reach the number 2048. I built it to practice responsive UI design, DOM manipulation, and JavaScript overall. The main focus was on creating a focused and minimalistic gameplay experience.  
+My implementation of the popular 2048 game where you try to connect as many blocks of numbers as possible to reach the number 2048. I built it to practice responsive UI design, DOM manipulation, and JavaScript. The main focus was on creating a focused and minimalistic gameplay experience.  
 
 <br>
 
 ![gameplay](./documentation/2048_ingame.gif)
 
 ## Features
-- fully playable in the browser
-- keyboard controls (arrow keys)
-- smooth tile animation (spawn, move, merge)
-- subtle screen shake animation when move not possible
-- score tracking (current and best using local storage)
-- responsive UI layout
-- game over screen
-- new game button
+- Fully playable in the browser
+- Keyboard controls (arrow keys)
+- Smooth tile animations (spawn, move, merge)
+- Subtle screen shake animation when a move is not possible
+- Score tracking (current and best)
+- Responsive UI layout
+- Game over screen
+- New game button
 
 <br>
 
@@ -24,8 +24,17 @@ My implementation of the popular 2048 game where you try and connect as many blo
 ![game](./documentation/2048_gameoverscreen.png)
 
 ## Technical Details
-HTML, CSS, vanila JavaScript
-### TODO
+Built with HTML, CSS, and vanilla JavaScript. Key features include:
+- Event listeners for user input (arrow keys)
+- Game states for simulating moves and merges
+- Local storage for tracking the best score
+- Promises used for smooth tile animations
+- Custom colour scheme that changes as tile values increase
+
+## Possible future improvements
+- Add touch controls for mobile
+- Let user pick colour theme
+- White mode (to match desktop preferences)
 
 ## How to Play
 1. Open the game [here](https://filipek-0.github.io/2048/)
